@@ -6,32 +6,20 @@
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <script>
         // إعداد الـ SDK
-        Pi.init({ version: "2.0", sandbox: true });
-
-        async function makePayment() {
-            try {
-                const payment = await Pi.createPayment({
-                    amount: 0.1,
-                    memo: "إكمال الخطوة 10",
-                    metadata: { orderId: 123 }
-                }, {
-                    onReady: (paymentId) => { console.log("Payment Ready:", paymentId); },
-                    onConnected: (paymentId) => { console.log("Payment Connected:", paymentId); },
-                    onConfirmed: (paymentId) => { console.log("Payment Confirmed:", paymentId); },
-                    onCancelled: (paymentId) => { console.log("Payment Cancelled"); },
-                    onError: (error, payment) => { console.error("Payment Error", error); }
-                });
-            } catch (err) {
-                alert("يرجى التأكد من فتح الرابط داخل Pi Browser");
-            }
-        }
-    </script>
-</head>
-<body style="text-align: center; font-family: sans-serif; padding-top: 50px;">
-    <h1>تطبيق Pi جاهز</h1>
-    <p>اضغط على الزر بالأسفل وانتظر نافذة المحفظة</p>
-    <button onclick="makePayment()" style="padding: 20px; font-size: 18px; background: #602d82; color: white; border: none; border-radius: 10px; cursor: pointer;">
-        اضغط هنا لإتمام الخطوة 10
-    </button>
-</body>
-</html>
+        <script>
+    Pi.init({ version: "2.0", sandbox: true });
+    
+    function startPayment() {
+        Pi.createPayment({
+            amount: 0.1,
+            memo: "Step 10",
+            metadata: { orderId: "1" }
+        }, {
+            onReady: function(paymentId) { console.log("Ready"); },
+            onConnected: function(paymentId) { console.log("Connected"); },
+            onConfirmed: function(paymentId) { console.log("Confirmed"); },
+            onCancelled: function(paymentId) { },
+            onError: function(error, payment) { alert(error.message); }
+        });
+    }
+</script>
