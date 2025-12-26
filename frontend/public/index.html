@@ -4,34 +4,36 @@
     <meta charset="UTF-8">
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="text-align: center; padding-top: 50px;">
-    <h1>تطبيق Pi</h1>
-    <button id="btn" style="padding: 20px; background: #602d82; color: white;">اضغط هنا للدفع</button>
+<body style="text-align: center; padding-top: 100px; font-family: sans-serif;">
+    <h2>تطبيق Pi التجريبي</h2>
+    <button id="pay-button" style="padding: 20px; background: #602d82; color: white; border: none; border-radius: 10px;">
+        اضغط هنا لإتمام الخطوة 10
+    </button>
 
     <script>
-        // هذا هو كود الـ Javascript الذي تسأل عنه
         const Pi = window.Pi;
+        // المحاولة الأولى لتعريف المتصفح بالتطبيق
         Pi.init({ version: "2.0", sandbox: true });
 
-        document.getElementById('btn').onclick = async function() {
+        document.getElementById('pay-button').onclick = async function() {
             try {
-                // تسجيل الدخول أولاً ليتعرف المتصفح عليك
-                await Pi.authenticate(['payments'], (onIncompletePaymentFound) => {});
+                // إجبار المتصفح على طلب الإذن أولاً (Authentication)
+                const auth = await Pi.authenticate(['payments'], (onIncompletePaymentFound) => {});
                 
-                // طلب الدفع لإكمال الخطوة 10
+                // طلب الدفع الفعلي
                 await Pi.createPayment({
                     amount: 0.1,
-                    memo: "إكمال الخطوة 10",
-                    metadata: { orderId: "123" }
+                    memo: "Test Transaction Step 10",
+                    metadata: { orderId: "12345" }
                 }, {
-                    onReady: (id) => {},
-                    onConnected: (id) => {},
-                    onConfirmed: (id) => { alert("نجحت العملية!"); },
+                    onReady: (id) => { console.log("Ready"); },
+                    onConnected: (id) => { console.log("Connected"); },
+                    onConfirmed: (id) => { alert("نجح الدفع! ارجع للوحة المطورين"); },
                     onCancelled: () => {},
-                    onError: (error) => { alert("خطأ: " + error.message); }
+                    onError: (error) => { alert("حدث خطأ في المحفظة: " + error.message); }
                 });
             } catch (err) {
-                alert("افتح الرابط من داخل Pi Browser");
+                alert("يرجى المحاولة مرة أخرى أو تحديث الصفحة");
             }
         };
     </script>
