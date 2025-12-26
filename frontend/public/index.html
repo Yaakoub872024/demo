@@ -1,25 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pi Payment</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+</head>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f4;">
+
+    <div style="text-align: center; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h2 style="color: #602d82;">إتمام الخطوة رقم 10</h2>
+        <button id="pay-button" style="padding: 15px 30px; font-size: 18px; background: #602d82; color: white; border: none; border-radius: 8px; cursor: pointer;">
+            اضغط هنا للدفع الآن
+        </button>
+    </div>
+
     <script>
-        // إعداد الـ SDK
-        <script>
-    Pi.init({ version: "2.0", sandbox: true });
-    
-    function startPayment() {
-        Pi.createPayment({
-            amount: 0.1,
-            memo: "Step 10",
-            metadata: { orderId: "1" }
-        }, {
-            onReady: function(paymentId) { console.log("Ready"); },
-            onConnected: function(paymentId) { console.log("Connected"); },
-            onConfirmed: function(paymentId) { console.log("Confirmed"); },
-            onCancelled: function(paymentId) { },
-            onError: function(error, payment) { alert(error.message); }
-        });
-    }
-</script>
+        // تعريف التطبيق فور تحميل الصفحة
+        const Pi = window.Pi;
+        Pi.init({ version: "2.0", sandbox: true });
+
+        document.getElementById('pay-button').onclick = async function() {
+            try {
+                const payment = await Pi.createPayment({
+                    amount: 0.1,
+                    memo: "Test Step 10",
+                    metadata: { orderId: "123" }
+                }, {
+                    onReady: (id) => { console.log("Ready", id); },
+                    onConnected: (id) => { console.log("Connected", id); },
+                    onConfirmed: (id) => { console.log("Confirmed", id); },
+                    onCancelled: () => { alert("تم إلغاء العملية"); },
+                    onError: (error) => { alert("حدث خطأ: " + error.message); }
+                });
+            } catch (err) {
+                alert("تأكد من فتح الرابط داخل متصفح باي (Pi Browser)");
+            }
+        };
+    </script>
+</body>
+</html>
