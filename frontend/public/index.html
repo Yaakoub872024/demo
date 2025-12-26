@@ -1,40 +1,37 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pi Payment</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
-<body style="display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f4;">
-
-    <div style="text-align: center; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <h2 style="color: #602d82;">إتمام الخطوة رقم 10</h2>
-        <button id="pay-button" style="padding: 15px 30px; font-size: 18px; background: #602d82; color: white; border: none; border-radius: 8px; cursor: pointer;">
-            اضغط هنا للدفع الآن
-        </button>
-    </div>
+<body style="text-align: center; padding-top: 50px;">
+    <h1>تطبيق Pi</h1>
+    <button id="btn" style="padding: 20px; background: #602d82; color: white;">اضغط هنا للدفع</button>
 
     <script>
-        // تعريف التطبيق فور تحميل الصفحة
+        // هذا هو كود الـ Javascript الذي تسأل عنه
         const Pi = window.Pi;
         Pi.init({ version: "2.0", sandbox: true });
 
-        document.getElementById('pay-button').onclick = async function() {
+        document.getElementById('btn').onclick = async function() {
             try {
-                const payment = await Pi.createPayment({
+                // تسجيل الدخول أولاً ليتعرف المتصفح عليك
+                await Pi.authenticate(['payments'], (onIncompletePaymentFound) => {});
+                
+                // طلب الدفع لإكمال الخطوة 10
+                await Pi.createPayment({
                     amount: 0.1,
-                    memo: "Test Step 10",
+                    memo: "إكمال الخطوة 10",
                     metadata: { orderId: "123" }
                 }, {
-                    onReady: (id) => { console.log("Ready", id); },
-                    onConnected: (id) => { console.log("Connected", id); },
-                    onConfirmed: (id) => { console.log("Confirmed", id); },
-                    onCancelled: () => { alert("تم إلغاء العملية"); },
-                    onError: (error) => { alert("حدث خطأ: " + error.message); }
+                    onReady: (id) => {},
+                    onConnected: (id) => {},
+                    onConfirmed: (id) => { alert("نجحت العملية!"); },
+                    onCancelled: () => {},
+                    onError: (error) => { alert("خطأ: " + error.message); }
                 });
             } catch (err) {
-                alert("تأكد من فتح الرابط داخل متصفح باي (Pi Browser)");
+                alert("افتح الرابط من داخل Pi Browser");
             }
         };
     </script>
