@@ -1,15 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <script>Pi.init({ version: "2.0", sandbox: true });</script>
+    <script>
+        // إعداد الـ SDK
+        Pi.init({ version: "2.0", sandbox: true });
+
+        async function makePayment() {
+            try {
+                const payment = await Pi.createPayment({
+                    amount: 0.1,
+                    memo: "إكمال الخطوة 10",
+                    metadata: { orderId: 123 }
+                }, {
+                    onReady: (paymentId) => { console.log("Payment Ready:", paymentId); },
+                    onConnected: (paymentId) => { console.log("Payment Connected:", paymentId); },
+                    onConfirmed: (paymentId) => { console.log("Payment Confirmed:", paymentId); },
+                    onCancelled: (paymentId) => { console.log("Payment Cancelled"); },
+                    onError: (error, payment) => { console.error("Payment Error", error); }
+                });
+            } catch (err) {
+                alert("يرجى التأكد من فتح الرابط داخل Pi Browser");
+            }
+        }
+    </script>
 </head>
-<body>
-    <div style="text-align: center; margin-top: 50px;">
-        <h1>تطبيق Pi جاهز</h1>
-        <button style="padding: 20px; font-size: 20px;" onclick="Pi.createPayment({ amount: 0.1, memo: 'Test', metadata: {} }, { onReady: (id) => {} })">
-            اضغط هنا لإتمام الخطوة 10
-        </button>
-    </div>
+<body style="text-align: center; font-family: sans-serif; padding-top: 50px;">
+    <h1>تطبيق Pi جاهز</h1>
+    <p>اضغط على الزر بالأسفل وانتظر نافذة المحفظة</p>
+    <button onclick="makePayment()" style="padding: 20px; font-size: 18px; background: #602d82; color: white; border: none; border-radius: 10px; cursor: pointer;">
+        اضغط هنا لإتمام الخطوة 10
+    </button>
 </body>
 </html>
